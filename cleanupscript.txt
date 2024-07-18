@@ -1,0 +1,78 @@
+Certainly! Here is a Unix shell script that reads multiple directories and their respective retention periods from a configuration file. It will delete files and subfolders older than the specified number of days for each directory, and it will create a log file for all the deletions.
+
+### Script: clean_old_files.sh
+
+```sh
+#!/bin/bash
+
+# Read the config file
+CONFIG_FILE="config.txt"
+
+# Check if the config file exists
+if [[ ! -f $CONFIG_FILE ]]; then
+  echo "Config file not found!"
+  exit 1
+fi
+
+# Log file
+LOG_FILE="deletion_log_$(date +%Y%m%d%H%M%S).log"
+
+# Process each line in the config file
+while IFS= read -r line
+do
+  # Skip empty lines and lines starting with #
+  if [[ -z "$line" || "$line" =~ ^# ]]; then
+    continue
+  fi
+
+  # Split the line into directory and days
+  IFS=' ' read -r -a parts <<< "$line"
+  TARGET_DIR="${parts[0]}"
+  RETENTION_DAYS="${parts[1]}"
+
+  # Check if the target directory exists
+  if [[ ! -d $TARGET_DIR ]]; then
+    echo "Target directory $TARGET_DIR does not exist!" >> "$LOG_FILE"
+    continue
+  fi
+
+  # Find and delete files and directories older than the specified days
+  find "$TARGET_DIR" -type f -mtime +"$RETENTION_DAYS" -print -delete >> "$LOG_FILE"
+  find "$TARGET_DIR" -type d -empty -mtime +"$RETENTION_DAYS" -print -delete >> "$LOG_FILE"
+
+done < "$CONFIG_FILE"
+
+# Notify the user
+echo "Cleanup complete. Details logged in $LOG_FILE."
+```
+
+### Configuration File: config.txt
+
+```txt
+# Directory Path and Retention Days
+/path/to/first/directory 120
+/path/to/second/directory 90
+/path/to/third/directory 60
+```
+
+### Explanation
+
+1. **Reading the Config File:**
+   - The script reads the configuration file `config.txt` line by line.
+   - It skips empty lines and comments (lines starting with `#`).
+
+2. **Parsing the Config File:**
+   - Each line is expected to contain a directory path followed by the number of days.
+   - The line is split into the directory path and retention days.
+
+3. **Logging Deletions:**
+   - A log file is created with a timestamp in its name.
+   - The `find` command is used to locate and delete files older than the specified number of days for each directory, logging the deleted files.
+   - Another `find` command deletes empty directories older than the specified number of days and logs them as well.
+
+4. **Execution:**
+   - Save the script as `clean_old_files.sh`.
+   - Ensure the script has execution permissions: `chmod +x clean_old_files.sh`.
+   - Run the script: `./clean_old_files.sh`.
+
+Make sure to update `config.txt` with the actual paths of the directories you want to clean up and the corresponding retention periods in days. This script will log all deletions, helping you to monitor the cleanup process.
