@@ -1,3 +1,16 @@
+Steps to Generate a JWT Token Manually
+A JWT consists of three parts:
+
+Header (Base64 encoded)
+Payload (Base64 encoded)
+Signature (HMAC SHA-256 signed)
+Each part is separated by a . (dot).
+
+1. Create a New Console App in Visual Studio
+Follow the same steps as before to create a Console App in Visual Studio.
+
+2. Write C# Code to Generate a JWT Token Without External Libraries
+Replace the content of Program.cs with the following code:
 using System;
 using System.Security.Cryptography;
 using System.Text;
@@ -55,3 +68,38 @@ class Program
         return new DateTimeOffset(DateTime.UtcNow.AddHours(1)).ToUnixTimeSeconds();
     }
 }
+
+3. Explanation of the Code
+Step 1 (Header): Defines algorithm (HS256) and type (JWT).
+Step 2 (Payload): Contains claims like sub (subject), userId, and exp (expiry time).
+Step 3 (Signature):
+Uses HMAC SHA-256 to sign the token.
+Encodes the signature using Base64Url encoding.
+Step 4 (Combine JWT): Creates the final JWT in the format:
+css
+Copy
+Edit
+header.payload.signature
+4. Run the Program
+Click Start (▶) or press F5 to run the application.
+The generated JWT token will be displayed in the console.
+Example Output:
+
+yaml
+Copy
+Edit
+Generated JWT Token:
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJKb2huRG9lIiwidXNlcklkIjoxMjMsImV4cCI6MTcxMzA5MzQ3Nn0.OJz6zKz5WW9PzUDB3QQlXgRMkh3nD5Jw7-mKbO7GFxI
+5. Verify the Token
+To check if the JWT is valid:
+
+Copy the generated token.
+Go to jwt.io.
+Paste the token in the encoded JWT field.
+Enter the secret key under "Verify Signature" to validate it.
+6. What’s Next?
+Would you like:
+
+Validating JWT tokens manually?
+Using JWT in an ASP.NET Core Web API?
+Handling Refresh Tokens?
