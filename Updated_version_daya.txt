@@ -1,0 +1,63 @@
+# Filename: Delete-OldFiles.ps1
+
+# === CONFIGURATION ===
+# Set your CSV file path here:
+$CsvFilePath = "C:\Path\To\Input.csv"
+
+# === LOGGING SETUP ===
+$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+$logFileName = "Delete-OldFiles-Log_$timestamp.txt"
+$logFile = Join-Path -Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath $logFileName
+
+Add-Content -Path $logFile -Value "`n[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Deletion Script Started"
+Add-Content -Path $logFile -Value "Using CSV: $CsvFilePath"
+
+# === FILE VALIDATION ===
+if (-Not (Test-Path $CsvFilePath)) {
+    $errorMsg = "CSV file not found at path: $CsvFilePath"
+    Write-Error $errorMsg
+    Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] ERROR: $errorMsg"
+    exit 1
+}
+
+# === IMPORT & PROCESS ENTRIES ===
+$entries = Import-Csv -Path $CsvFilePath
+
+foreach ($entry in $entries) {
+    $folderPath = $entry.FolderPath
+    $daysOld = [int]$entry.DaysOld
+    $includeSubfolders = [bool]$entry.IncludeSubfolders
+    $deletedCount = 0
+
+    if (-Not (Test-Path $folderPath)) {
+        $message = "Folder not found: $folderPath"
+        Write-Warning $message
+        Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] $message"
+        continue
+    }
+
+    $cutoffDate = (Get-Date).AddDays(-$daysOld)
+    $searchOption = if ($includeSubfolders) { '-Recurse' } else { '' }
+
+    $files = Get-ChildItem -Path $folderPath $searchOption -File |
+             Where-Object { $_.LastWriteTime -lt $cutoffDate }
+
+    foreach ($file in $files) {
+        try {
+            Remove-Item -Path $file.FullName -Force
+            $deletedCount++
+            $logEntry = "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Deleted: $($file.FullName)"
+            Add-Content -Path $logFile -Value $logEntry
+        } catch {
+            $message = "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Failed to delete: $($file.FullName) - $($_.Exception.Message)"
+            Write-Warning $message
+            Add-Content -Path $logFile -Value $message
+        }
+    }
+
+    $summaryMessage = "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Folder: $folderPath | Files Deleted: $deletedCount"
+    Write-Host $summaryMessage
+    Add-Content -Path $logFile -Value $summaryMessage
+}
+
+Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Deletion Script Completed"
