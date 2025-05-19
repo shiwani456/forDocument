@@ -16,7 +16,6 @@ Add-Content -Path $logFile -Value "CSV File: $CsvFilePath"
 # === READ CSV ===
 if (-Not (Test-Path $CsvFilePath)) {
     Add-Content -Path $logFile -Value "ERROR: CSV file not found at path $CsvFilePath"
-    Write-Host "ERROR: CSV file not found at path $CsvFilePath"
     exit 1
 }
 
@@ -24,7 +23,6 @@ try {
     $entries = Import-Csv -Path $CsvFilePath
 } catch {
     Add-Content -Path $logFile -Value "ERROR: Failed to read CSV - $($_.Exception.Message)"
-    Write-Host "ERROR: Failed to read CSV - $($_.Exception.Message)"
     exit 1
 }
 
@@ -38,14 +36,12 @@ foreach ($entry in $entries) {
 
     if (-Not (Test-Path $folderPath)) {
         Add-Content -Path $logFile -Value "WARNING: Folder not found: $folderPath"
-        Write-Host "WARNING: Folder not found: $folderPath"
         continue
     }
 
     $cutoffDate = (Get-Date).AddDays(-$daysOld)
     Add-Content -Path $logFile -Value "Cutoff date for deletion: $cutoffDate"
 
-    # Build parameters for Get-ChildItem
     if ($includeSubfolders) {
         $files = Get-ChildItem -Path $folderPath -Recurse -File -ErrorAction SilentlyContinue |
                  Where-Object { $_.LastWriteTime -lt $cutoffDate }
@@ -57,7 +53,6 @@ foreach ($entry in $entries) {
     Add-Content -Path $logFile -Value "Found $($files.Count) file(s) to delete."
 
     if ($files.Count -eq 0) {
-        Write-Host "No files older than $daysOld days found in $folderPath"
         continue
     }
 
@@ -66,16 +61,12 @@ foreach ($entry in $entries) {
             Remove-Item -Path $file.FullName -Force -ErrorAction Stop
             $deletedCount++
             Add-Content -Path $logFile -Value "Deleted: $($file.FullName) at $(Get-Date -Format 'HH:mm:ss')"
-            Write-Host "Deleted: $($file.FullName)"
         } catch {
             Add-Content -Path $logFile -Value "ERROR deleting $($file.FullName): $($_.Exception.Message)"
-            Write-Host "ERROR deleting $($file.FullName): $($_.Exception.Message)"
         }
     }
 
     Add-Content -Path $logFile -Value "Summary: Deleted $deletedCount files from $folderPath"
-    Write-Host "Summary: Deleted $deletedCount files from $folderPath"
 }
 
 Add-Content -Path $logFile -Value "--- Script Run Completed ---"
-Write-Host "--- Script Run Completed ---"
