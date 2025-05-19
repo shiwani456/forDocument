@@ -1,13 +1,18 @@
 # Filename: Delete-OldFiles.ps1
 
 # === CONFIGURATION ===
-# Set your CSV file path here:
 $CsvFilePath = "C:\Path\To\Input.csv"
 
 # === LOGGING SETUP ===
+$scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$logFolder = Join-Path -Path $scriptDir -ChildPath "Logs"
+if (-Not (Test-Path $logFolder)) {
+    New-Item -ItemType Directory -Path $logFolder | Out-Null
+}
+
 $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
 $logFileName = "Delete-OldFiles-Log_$timestamp.txt"
-$logFile = Join-Path -Path (Split-Path -Parent $MyInvocation.MyCommand.Path) -ChildPath $logFileName
+$logFile = Join-Path -Path $logFolder -ChildPath $logFileName
 
 Add-Content -Path $logFile -Value "`n[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Deletion Script Started"
 Add-Content -Path $logFile -Value "Using CSV: $CsvFilePath"
@@ -15,7 +20,6 @@ Add-Content -Path $logFile -Value "Using CSV: $CsvFilePath"
 # === FILE VALIDATION ===
 if (-Not (Test-Path $CsvFilePath)) {
     $errorMsg = "CSV file not found at path: $CsvFilePath"
-    Write-Error $errorMsg
     Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] ERROR: $errorMsg"
     exit 1
 }
@@ -30,9 +34,8 @@ foreach ($entry in $entries) {
     $deletedCount = 0
 
     if (-Not (Test-Path $folderPath)) {
-        $message = "Folder not found: $folderPath"
-        Write-Warning $message
-        Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] $message"
+        $message = "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Folder not found: $folderPath"
+        Add-Content -Path $logFile -Value $message
         continue
     }
 
@@ -50,13 +53,11 @@ foreach ($entry in $entries) {
             Add-Content -Path $logFile -Value $logEntry
         } catch {
             $message = "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Failed to delete: $($file.FullName) - $($_.Exception.Message)"
-            Write-Warning $message
             Add-Content -Path $logFile -Value $message
         }
     }
 
     $summaryMessage = "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Folder: $folderPath | Files Deleted: $deletedCount"
-    Write-Host $summaryMessage
     Add-Content -Path $logFile -Value $summaryMessage
 }
 
