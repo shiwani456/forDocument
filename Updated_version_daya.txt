@@ -1,7 +1,5 @@
-# Filename: Delete-OldFiles.ps1
-
 # === CONFIGURATION ===
-$CsvFilePath = "C:\Path\To\Input.csv"
+$CsvFilePath = "C:\Path\To\Input.csv"  # 🔁 Update this to your actual CSV file path
 
 # === LOGGING SETUP ===
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -10,21 +8,22 @@ if (-Not (Test-Path $logFolder)) {
     New-Item -ItemType Directory -Path $logFolder | Out-Null
 }
 
-$timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
-$logFileName = "Delete-OldFiles-Log_$timestamp.txt"
+# Daily log file (one per date)
+$logDate = Get-Date -Format "yyyy-MM-dd"
+$logFileName = "Delete-OldFiles-Log_$logDate.txt"
 $logFile = Join-Path -Path $logFolder -ChildPath $logFileName
 
-Add-Content -Path $logFile -Value "`n[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Deletion Script Started"
+# Header per script run
+Add-Content -Path $logFile -Value "`n[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] --- Script Run Started ---"
 Add-Content -Path $logFile -Value "Using CSV: $CsvFilePath"
 
-# === FILE VALIDATION ===
+# === VALIDATE INPUT FILE ===
 if (-Not (Test-Path $CsvFilePath)) {
-    $errorMsg = "CSV file not found at path: $CsvFilePath"
-    Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] ERROR: $errorMsg"
+    Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] ERROR: CSV file not found at path: $CsvFilePath"
     exit 1
 }
 
-# === IMPORT & PROCESS ENTRIES ===
+# === PROCESS EACH ENTRY FROM CSV ===
 $entries = Import-Csv -Path $CsvFilePath
 
 foreach ($entry in $entries) {
@@ -34,31 +33,27 @@ foreach ($entry in $entries) {
     $deletedCount = 0
 
     if (-Not (Test-Path $folderPath)) {
-        $message = "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Folder not found: $folderPath"
-        Add-Content -Path $logFile -Value $message
+        Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] WARNING: Folder not found: $folderPath"
         continue
     }
 
     $cutoffDate = (Get-Date).AddDays(-$daysOld)
     $searchOption = if ($includeSubfolders) { '-Recurse' } else { '' }
 
-    $files = Get-ChildItem -Path $folderPath $searchOption -File |
+    $files = Get-ChildItem -Path $folderPath $searchOption -File -ErrorAction SilentlyContinue |
              Where-Object { $_.LastWriteTime -lt $cutoffDate }
 
     foreach ($file in $files) {
         try {
-            Remove-Item -Path $file.FullName -Force
+            Remove-Item -Path $file.FullName -Force -ErrorAction Stop
             $deletedCount++
-            $logEntry = "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Deleted: $($file.FullName)"
-            Add-Content -Path $logFile -Value $logEntry
+            Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Deleted: $($file.FullName)"
         } catch {
-            $message = "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Failed to delete: $($file.FullName) - $($_.Exception.Message)"
-            Add-Content -Path $logFile -Value $message
+            Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] ERROR: Failed to delete $($file.FullName) - $($_.Exception.Message)"
         }
     }
 
-    $summaryMessage = "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Folder: $folderPath | Files Deleted: $deletedCount"
-    Add-Content -Path $logFile -Value $summaryMessage
+    Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Folder: $folderPath | Files Deleted: $deletedCount"
 }
 
-Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] Deletion Script Completed"
+Add-Content -Path $logFile -Value "[$(Get-Date -Format "yyyy-MM-dd HH:mm:ss")] --- Script Run Completed ---"
