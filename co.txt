@@ -1,0 +1,26 @@
+Total describtion
+
+Write a PowerShell script named `CleanupUtility.ps1` that:
+
+1. Reads a text file (path specified as $TxtFilePath) containing folder paths, a number of days (to define how old files must be for deletion), and a flag for including subfolders, separated by "|".
+2. Logs the script start, entries processed, and actions taken into a log file with a date-based name (format: Deleted-OldFiles-Log_YYYY-MM-DD.txt).
+3. For each entry in the text file:
+   a. Parse the folder path, days old, and include subfolders flag.
+   b. Validate and convert the include subfolders field to Boolean.
+   c. If the folder path does not exist, log a warning and skip.
+   d. Calculate the cutoff date based on the specified days old.
+   e. Delete files older than the cutoff date in the specified folder and optionally in its subfolders.
+   f. Delete subfolders and their contents if the include subfolders flag is true.
+4. Log the number of deleted files and folders for each processed entry.
+5. Log the script end.
+
+Ensure error handling for:
+- Missing or unreadable input file
+- Invalid line format
+- Invalid Boolean value for include subfolders
+- Failure to delete files or folders
+
+Summary 
+
+The PowerShell script reads a text file containing folder paths, a number of days (to define how old files must be for deletion), and a flag indicating whether to include subfolders. For each entry, it verifies the input, calculates the cutoff date, and deletes files older than the specified number of days. If subfolders are included, it also deletes subfolders and their contents. The script maintains a log of actions, including errors, warnings, and a summary of deleted files and folders, written to a date-stamped log file.
+
