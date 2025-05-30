@@ -21,6 +21,4 @@ Ensure error handling for:
 - Failure to delete files or folders
 
 Summary 
-
-The PowerShell script reads a text file containing folder paths, a number of days (to define how old files must be for deletion), and a flag indicating whether to include subfolders. For each entry, it verifies the input, calculates the cutoff date, and deletes files older than the specified number of days. If subfolders are included, it also deletes subfolders and their contents. The script maintains a log of actions, including errors, warnings, and a summary of deleted files and folders, written to a date-stamped log file.
-
+The PowerShell script reads a text file containing folder paths, a number of days (to define how old files must be for deletion), and a flag indicating whether to include subfolders. For each entry, it verifies the input, calculates the cutoff date, and deletes files older than the specified number of days. If subfolders are included, it also deletes subfolders and their contents. The script checks for a "Logs" folder inside its own directory; if it exists, it stores a log file inside that folder. If the "Logs" folder doesn’t exist, it creates the log file in the same directory as the script. The log file is named with the format deletionLog_YYYY-MM-DD.txt and contains a detailed record of actions, including errors, warnings, and a summary of deleted files and folders.
