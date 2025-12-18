@@ -1,1 +1,52 @@
-Below are the story and task list which I have worked on through the years Please help me create a year end review based on below data first created a pointer wise descriptions and go for divisions 1.compile with latest framework library to include bulk attachment 2.In config add new routing logic in global config file for bulk attachment 3.Onboarding Document downloadservice to hub server 4.In DocumentDownloadservice build new operation for search documents: A new search operation in DocumentDOwnloadServices will be introduced to integrate with consolidated service layer (CSL)V001 to search for document within content Manager Ondemand(CMOD) repository 5.WealthSchema onboarding to CICD 6.Extream version Upgrade for older extream only template with using oracle DB in Tables 7.Update SWFT url in SIT2 config to SWFT sit2 8. worked on june relase create Iplan and bundle creation 9.build a new utility using powershell script to cleanup older files and folder 10. Splunk Onboarding for new components 11.Work on OCT release : Iplan Creation and bundle Prep 12.Archive manger to validation for duplicate batch checker if found one skipping BI serviuce 13. Archive manger to add condition for techvalidation mode if techvlidation is happening skip the bulk ingestion service calling got into new project and leaned new things 15.KT sessions with senior for new project SKAN 16 learned Openshift Linux helm charts 17 Deploy new images to clusters 18 change architecture of whole system to support existing CI CD and other process 18.created script installer.sh and prereq.sh one is to install all services in one go and another one to install certificates 19.CI CD pipeline setup for new PRoject Support end to end 20. creating new project documentations 21. Kt sessions for new joiny 22. worked on few Risk Intregration and Support ENviroments (quetionaire and onboarding and management level setups) 23 supported Nov release I Plan creation and CRQ questionaire and deployment stuff for SKAN 24 created a helm chart for certificate deployment part of CID onboarding and for COnfig deployment 25code changes for CI CD support 26. wokred on creating new helm chart using old images to Scaning PDF
+Year-End Self Review
+Overall Summary
+
+This year was a strong learning and contribution phase. I worked on development tasks, configuration changes, CI/CD enablement, automation, and multiple release activities. I also moved into a new project, learned new technologies, and supported the team through documentation and knowledge transfer. The focus throughout the year was to complete assigned work on time, improve system stability, and support smooth releases.
+
+Development & Functional Contributions
+
+I worked on several functional changes and enhancements across different services. Applications were compiled with the latest framework libraries to support bulk attachment functionality. To support this feature, new routing logic was added in the global configuration file.
+
+I onboarded DocumentDownloadService to the hub server and enhanced it by building a new document search operation. This operation integrates with the Consolidated Service Layer (CSL V001) and allows searching documents from the Content Manager OnDemand (CMOD) repository. These changes improved document handling and search capabilities.
+
+I also worked on Extreme version upgrades for older templates that use Oracle database tables and updated SWIFT SIT2 URL configurations as required.
+
+In the Archive Manager, I added validation logic to detect duplicate batches and skip unnecessary BI service calls. I also added a condition for technical validation mode to skip bulk ingestion service calls, helping avoid unwanted processing during validation.
+
+Additionally, I supported risk integration and support environments, including questionnaire setup, onboarding activities, and management-level configurations. I also made multiple code changes to support CI/CD compatibility across services.
+
+DevOps, CI/CD & Automation
+
+A significant part of the year was focused on DevOps and automation work. I onboarded WealthSchema into CI/CD pipelines and worked extensively with Linux, OpenShift, and Helm charts. I deployed new container images to clusters and supported environment-level changes.
+
+I worked on improving system architecture so it could align with existing CI/CD pipelines and operational processes. I also set up end-to-end CI/CD pipelines for a new project, supporting build, deployment, and release workflows.
+
+To improve deployment efficiency, I created automation scripts:
+
+installer.sh to install all services in a single run
+
+prereq.sh to install certificates and required prerequisites
+
+I also created Helm charts for certificate deployment and configuration deployment as part of CI/CD onboarding. In addition, I worked on creating a new Helm chart using existing images to support PDF scanning functionality.
+
+Release Management & Support
+
+I actively supported multiple releases during the year, including June, October, and November releases. My responsibilities included IPlan creation, bundle preparation, CRQ questionnaire support, and deployment activities.
+
+For the SKAN project, I supported the November release and handled release planning and deployment-related tasks. I also built a PowerShell utility to clean up older files and folders, helping improve system maintenance.
+
+To improve monitoring and visibility, I completed Splunk onboarding for new components.
+
+Learning, Knowledge Transfer & Documentation
+
+During the year, I transitioned into a new project, which required learning new systems, tools, and workflows. I attended multiple KT sessions with senior team members to understand the architecture and processes of the SKAN project.
+
+I also conducted KT sessions for new joiners, helping them understand the system and project setup. To support ongoing learning and smoother onboarding, I created and maintained project documentation covering setup, CI/CD processes, and deployment steps.
+
+Collaboration & Work Approach
+
+I worked closely with team members across development, DevOps, and support teams. I actively communicated during releases, raised issues when needed, and followed up until resolution. I remained open to feedback and worked on improving both technical and communication skills.
+
+Challenges & Learnings
+
+Moving into a new project and working with CI/CD, OpenShift, and architecture-level changes was challenging at first. However, through continuous learning, KT sessions, and hands-on work, I became more confident in handling tasks independently and end to end.
