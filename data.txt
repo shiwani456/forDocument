@@ -1,3 +1,11 @@
-This year, I consistently worked toward driving operational excellence by improving system reliability, reducing manual effort, and supporting smooth releases while working on two projects in parallel. I contributed to stable operations by supporting multiple releases (June, October, and November) through IPlan creation, bundle preparation, CRQ support, and deployments, ensuring changes were delivered in a controlled and predictable manner.
+Collaboration & Inclusion:
+I consistently worked in a collaborative way across teams and projects, ensuring open communication and shared ownership. I actively participated in KT sessions with senior team members and conducted KT sessions for new joiners, helping them feel included, supported, and confident from the start.
 
-I improved operational efficiency by building automation scripts such as installer.sh, prereq.sh, and a PowerShell cleanup utility, which reduced manual installation and maintenance effort. I also created Helm charts for certificate and configuration deployment, helping standardize deployments across environments.
+Integrity & Trust:
+I maintained transparency in my work by clearly communicating progress, risks, and dependencies, especially during release and support activities. I followed processes, respected timelines, and ensured commitments were met, which helped build trust within the team.
+
+Ownership & Accountability:
+While working on multiple projects in parallel, I took responsibility for assigned tasks end to end and supported teammates during high-priority situations, including releases and production support.
+
+Excellence & Continuous Learning:
+I focused on continuous learning and knowledge sharing by creating clear documentation and improving team workflows, helping the team work more efficiently.
